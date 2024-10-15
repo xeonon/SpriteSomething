@@ -4,9 +4,11 @@ import weakref    #because memory leaks are stupid
 import tkinter as tk
 import json
 import os
+import traceback
 import locale
 from PIL import Image, ImageTk
 from functools import partial
+from json.decoder import JSONDecodeError
 from source.meta.common import common
 from source.meta.gui import gui_common
 from source.meta import ssTranslate as fish
@@ -188,7 +190,11 @@ class SpiffyGroup():
 		keypresses = None
 		bindings_filename = common.get_resource(["meta","manifests"],"bindings.json")
 		with open(bindings_filename,encoding="utf-8") as f:
-			bindings = json.load(f)
+			bindings = {}
+			try:
+				bindings = json.load(f)
+			except JSONDecodeError as e:
+				raise ValueError("Bindings Manifest malformed!")
 		keypresses_switcher = bindings[self.label.lower()] if self.label.lower() in bindings else {}
 		keypresses = keypresses_switcher.get(internal_value_name.lower(),None)
 		if keypresses:

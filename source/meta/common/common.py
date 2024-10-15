@@ -1,42 +1,42 @@
-import fractions  # for gcd
+import math  # for gcd
 import itertools
-import numpy as np
 import os
 import struct
 import re
-from PIL import Image, ImageChops
 
-# are these images the same?
+try:
+    import numpy as np
+    from PIL import Image, ImageChops
+except ModuleNotFoundError as e:
+    print(e)
 
 
 def equal(image1, image2):
+    # are these images the same?
     return ImageChops.difference(image1, image2).getbbox() is None
-
-# least common multiple
 
 
 def lcm(x, y):
-    return x * y // fractions.gcd(x, y)
-
-# clean filenames
+    # least common multiple
+    return x * y // math.gcd(x, y)
 
 
 def filename_scrub(filename):
+    # clean filenames
     # prevents untowards things like spaces in filenames,
     #  to improve compatibility
     new_filename = str(filename).lower()
     new_filename = re.sub(r" ", "-", new_filename)  # no spaces
     # no weird things in the name
-    new_filename = re.sub(r"[\%\$\^]", "", new_filename)
+    new_filename = re.sub(r"[\%\$\^\:\']", "", new_filename)
     # no weird things at beginning of name
     new_filename = re.sub(r"^[^A-Za-z0-9]+", "", new_filename)
 
     return new_filename
 
-# get all resources from app folder & user folder
-
 
 def get_all_resources(subdir=None, desired_filename=None):
+    # get all resources from app folder & user folder
     file_list = []
 
     if subdir is not None and desired_filename is None:
@@ -72,6 +72,8 @@ def get_resource(subdir=None, desired_filename=None):
         subdir = os.path.join(*subdir)
 
     file_list = get_all_resources(subdir, desired_filename)
+    if not file_list and "arrow-" not in desired_filename and "-thing" not in desired_filename:
+        print(subdir, desired_filename, "not found!")
     return file_list[0] if file_list else None
 
 
@@ -94,21 +96,25 @@ def gather_all_from_resource_subdirectory(subdir):
                     file_list.append(filename)
     return file_list
 
-# apply a palette to an image
-
 
 def apply_palette(image, palette):
+    # apply a palette to an image
     if image is None:
         pass
         # print("Not a valid image to apply palette to!")
-    if image.mode == "P":
-        flat_palette = [0 for _ in range(3 * 256)]
-        flat_palette[3:3 * len(palette) +
-                     3] = [x for color in palette for x in color]
-        alpha_mask = image.point(lambda x: 0 if x == 0 else 1, mode="1")
-        image.putpalette(flat_palette)
-        image = image.convert('RGBA')
-        image.putalpha(alpha_mask)
+    if palette:
+        if len(palette) < 1:
+            image = image.convert('RGBA')
+            return image
+            # print("Not a valid palette to apply!")
+        if image.mode == "P":
+            flat_palette = [0 for _ in range(3 * 256)]
+            flat_palette[3:3 * len(palette) +
+                         3] = [x for color in palette for x in color]
+            alpha_mask = image.point(lambda x: 0 if x == 0 else 1, mode="1")
+            image.putpalette(flat_palette)
+            image = image.convert('RGBA')
+            image.putalpha(alpha_mask)
     return image
 
 
@@ -146,13 +152,13 @@ def convert_555_to_rgb(color, recurse=True):
         "convert_555_to_rgb() called with doubly-iterable argument")
 
 
-# expects (r,g,b) tuples in a list, returns big endian 2-byte colors in a list
 def convert_to_555(palette):
+    # expects (r,g,b) tuples in a list, returns big endian 2-byte colors in a list
     return [single_convert_to_555(color) for color in palette]
 
 
-# expects an (r,g,b) tuple, returns a big endian 2-byte value
 def single_convert_to_555(color):
+    # expects an (r,g,b) tuple, returns a big endian 2-byte value
     red, green, blue = [snescolor_eighth(x) for x in color]
     return (blue * 1024) + \
         (green * 32) + \
@@ -285,15 +291,19 @@ def convert_tile_from_bitplanes(raw_tile):
 
 def image_from_bitplanes(raw_tile):
     # fromarray expects column major format, so have to switch the axes
-    return Image.fromarray(
-        convert_tile_from_bitplanes(raw_tile).swapaxes(0, 1),
-        'P'
-    )
+    if raw_tile:
+        return Image.fromarray(
+            convert_tile_from_bitplanes(raw_tile).swapaxes(0, 1),
+            'P'
+        )
 
 
 def convert_to_4bpp(image, offset, dimensions, extra_area):
     # have to process these differently so that 16x16 tiles canbe correctly
     #  reconstructed
+    # print(image.mode, image.name, image.size)
+    if image.mode != "P":
+        image = image.convert('P')
     top_row = []
     bottom_row = []
     small_tiles = []
@@ -305,6 +315,9 @@ def convert_to_4bpp(image, offset, dimensions, extra_area):
         ymin += offset[1]
         xmax += offset[0]
         ymax += offset[1]
+        w = image.size[0]
+        h = image.size[1]
+        # print(f"({w},{h})")
         x_chad_length = (xmax - xmin) % 16
         y_chad_length = (ymax - ymin) % 16
         for y in range(ymin, ymax - 15, 16):
@@ -471,6 +484,7 @@ def from_u32(buffer):
 
 def main():
     print(f"Called main() on utility library {__file__}")
+
 
 if __name__ == "__main__":
     main()

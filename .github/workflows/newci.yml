@@ -7,13 +7,21 @@ on: [push, pull_request]
 #########
 # actions
 #########
-# actions/checkout@v3.1.0
-# actions/download-artifact@v3.0.1
+# actions/checkout@v4.1.7
+# actions/download-artifact@v4.1.8
 # actions/create-release
 # actions/upload-release-asset
 # Artheau/SpriteSomething/get-parent-dir
 # Artheau/SpriteSomething/install
 # Artheau/SpriteSomething/test
+
+#########
+# runners
+# https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners
+#########
+# ubuntu-latest,  ubuntu-22.04, ubuntu-20.04
+# macos-latest,   macos-12
+# windows-latest, windows-2022
 
 jobs:
   # Test
@@ -26,50 +34,32 @@ jobs:
       matrix:
         # should run on all OS
         os-name: [
-          ubuntu-latest,
+          # ubuntu-latest,  # ubuntu-22.04
           ubuntu-22.04,
           ubuntu-20.04,
-          macos-latest,
-          windows-latest
+          macos-latest,   # macos-12
+          windows-latest  # windows-2022
         ]
 
-        # should run on py 3.8-3.10
+        # should run on py 3.11+
         python-version: [
-          3.8,
-          3.9,
-          "3.10"
+          "3.11",
+          "3.12",
         ]
 
         # PIL 6.2.2 is good
         # PIL 7.0.0+ introduces color error
+        # PIL 7.0.0+ should be fixed
         pillow-version: [
-          "6.2.2",
-          # "7.0.0",
-          # "7.1.2",
-          # "7.2.0",
-          # "8.0.1",
-          # "8.1.2",
-          # "8.2.0",
-          # "8.3.2",
-          # "8.4.0",
-          # "9.0.1",
+          "10.2.0",
         ]
-        exclude:
-          - os-name: macos-latest
-            python-version: 3.9
-          - os-name: macos-latest
-            python-version: "3.10"
-          - os-name: windows-latest
-            python-version: 3.9
-          - os-name: windows-latest
-            python-version: "3.10"
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4.1.7
       # install python
       - name: 💿Install Python
-        uses: actions/setup-python@v4.3.0
+        uses: actions/setup-python@v5.2.0
         with:
           python-version: ${{ matrix.python-version }}
       # python version
@@ -81,9 +71,15 @@ jobs:
       - name: 💿Call Install
         uses: ./.github/actions/install
         with:
+          calling-job: diags
           os-name: ${{ matrix.os-name }}
           python-version: ${{ matrix.python-version }}
           pillow-version: ${{ matrix.pillow-version }}
+      # Analyze used GitHub Actions
+      - name: Analyze used GitHub Actions
+        shell: bash
+        run: |
+          python ./resources/ci/common/list_actions.py
       # test
       - name: 🧮Print Diagnostics
         shell: bash
@@ -99,52 +95,38 @@ jobs:
     strategy:
       matrix:
         # should run on all OS
+        # except Mac now since it's erroring out with tk in py3.8+
+        # FIXME: is Mac happy now?
         os-name: [
-          ubuntu-latest,
+          # ubuntu-latest,  # ubuntu-22.04
           ubuntu-22.04,
           ubuntu-20.04,
           macos-latest,
           windows-latest
         ]
 
-        # should run on py 3.8-3.10
+        # should run on py 3.11+
         python-version: [
-          3.8,
-          3.9,
-          "3.10"
+          "3.11",
+          "3.12",
         ]
 
         # PIL 6.2.2 is good
         # PIL 7.0.0+ introduces color error
+        # PIL 7.0.0+ should be fixed
         pillow-version: [
-          "6.2.2",
-          # "7.0.0",
-          # "7.1.2",
-          # "7.2.0",
-          # "8.0.1",
-          # "8.1.2",
-          # "8.2.0",
-          # "8.3.2",
-          # "8.4.0",
-          # "9.0.1",
+          "10.2.0",
         ]
-        exclude:
-          - os-name: macos-latest
-            python-version: 3.9
-          - os-name: macos-latest
-            python-version: "3.10"
-          - os-name: windows-latest
-            python-version: 3.9
-          - os-name: windows-latest
-            python-version: "3.10"
+
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4.1.7
       # install
       - name: 💿Call Install
         uses: ./.github/actions/install
         with:
+          calling-job: test
           os-name: ${{ matrix.os-name }}
           python-version: ${{ matrix.python-version }}
           pillow-version: ${{ matrix.pillow-version }}
@@ -161,58 +143,41 @@ jobs:
     name: 💿/🔨
     runs-on: ${{ matrix.os-name }}
     needs: [install-test]
-    continue-on-error: True
+    # continue-on-error: True
 
     strategy:
       matrix:
         # should run on all OS
         os-name: [
-          ubuntu-latest,
+          # ubuntu-latest,  # ubuntu-22.04
           ubuntu-22.04,
           ubuntu-20.04,
-          macos-latest,
-          windows-latest
+          macos-latest,   # macos-12
+          windows-latest  # windows-2022
         ]
 
-        # should run on py 3.8-3.10
+        # should run on py 3.11+
         python-version: [
-          3.8,
-          3.9,
-          "3.10"
+          "3.11",
+          "3.12",
         ]
 
         # PIL 6.2.2 is good
         # PIL 7.0.0+ introduces color error
+        # PIL 7.0.0+ should be fixed
         pillow-version: [
-            "6.2.2",
-            # "7.0.0",
-            # "7.1.2",
-            # "7.2.0",
-            # "8.0.1",
-            # "8.1.2",
-            # "8.2.0",
-            # "8.3.2",
-            # "8.4.0",
-            # "9.0.1",
-          ]
-        exclude:
-          # mac & windows fail on 3.9+
-          - os-name: macos-latest
-            python-version: 3.9
-          - os-name: macos-latest
-            python-version: "3.10"
-          - os-name: windows-latest
-            python-version: 3.9
-          - os-name: windows-latest
-            python-version: "3.10"
+          "10.2.0",
+        ]
+
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4.1.7
       # install
       - name: 💿Call Install
         uses: ./.github/actions/install
         with:
+          calling-job: build
           os-name: ${{ matrix.os-name }}
           python-version: ${{ matrix.python-version }}
           pillow-version: ${{ matrix.pillow-version }}
@@ -220,6 +185,7 @@ jobs:
       - name: 🔨Call Build
         uses: ./.github/actions/build
         with:
+          calling-job: build
           os-name: ${{ matrix.os-name }}
           python-version: ${{ matrix.python-version }}
           pillow-version: ${{ matrix.pillow-version }}
@@ -232,31 +198,42 @@ jobs:
 
     strategy:
       matrix:
+        # should run on latest explicit ubuntu version
         # should run on all LATEST OS
         os-name: [
-          ubuntu-latest,
+          # ubuntu-latest,  # ubuntu-22.04
+          ubuntu-22.04,
           macos-latest,
           windows-latest
         ]
 
         # run on py 3.8 (EOL: 2024-10-14)
         # EOL
+        # https://devguide.python.org/versions/
         #  3.8:   2024-10-14
         #  3.9:   2025-10-05
         #  3.10:  2026-10-04
-        python-version: [3.8]
+        #  3.11:  2027-10
+        #  3.12:  2028-10
+        python-version: [
+          "3.11",
+          "3.12",
+        ]
 
-        # run on PIL 6.2.2
-        # can't build on py 3.9-3.10
-        pillow-version: ["6.2.2"]
+        # PIL 7.0.0+ should be fixed
+        pillow-version: [
+          "10.2.0",
+        ]
+
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4.1.7
       # install
       - name: 💿Call Install
         uses: ./.github/actions/install
         with:
+          calling-job: release
           os-name: ${{ matrix.os-name }}
           python-version: ${{ matrix.python-version }}
           pillow-version: ${{ matrix.pillow-version }}
@@ -276,13 +253,22 @@ jobs:
 
     strategy:
       matrix:
-        os-name: [ubuntu-latest]
-        python-version: [3.8]
+        # should run on latest explicit ubuntu version
+        os-name: [
+          # ubuntu-latest,  # ubuntu-22.04
+          ubuntu-22.04,
+        ]
+        python-version: [
+          "3.12"
+        ]
+        pillow-version: [
+          "10.2.0"
+        ]
 
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4.1.7
 
       # install dependencies via pip
       - name: 💿Install Dependencies via pip
@@ -297,30 +283,31 @@ jobs:
 
       # download appversion artifact
       - name: 🔽Download AppVersion Artifact
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4.1.8
         with:
-          name: appversion-${{ matrix.os-name }}
+          name: appversion-build-${{ matrix.os-name }}-py${{ matrix.python-version }}-pil${{ matrix.pillow-version }}
           path: ${{ steps.parentDir.outputs.parentDir }}/build
 
       # download ubuntu archive artifact
       - name: 🔽Download Ubuntu Archive Artifact
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4.1.8
         with:
-          name: archive-ubuntu-latest
+          # should run on latest explicit ubuntu version
+          name: archive-ubuntu-22.04-py${{ matrix.python-version }}-pil${{ matrix.pillow-version }}
           path: ${{ steps.parentDir.outputs.parentDir }}/deploy/linux
 
       # download macos archive artifact
       - name: 🔽Download MacOS Archive Artifact
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4.1.8
         with:
-          name: archive-macos-latest
+          name: archive-macos-latest-py${{ matrix.python-version }}-pil${{ matrix.pillow-version }}
           path: ${{ steps.parentDir.outputs.parentDir }}/deploy/macos
 
       # download windows archive artifact
       - name: 🔽Download Windows Archive Artifact
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4.1.8
         with:
-          name: archive-windows-latest
+          name: archive-windows-latest-py${{ matrix.python-version }}-pil${{ matrix.pillow-version }}
           path: ${{ steps.parentDir.outputs.parentDir }}/deploy/windows
 
       # archive listing
@@ -424,21 +411,31 @@ jobs:
 
     strategy:
       matrix:
-        os-name: [ubuntu-latest]
+        # should run on latest explicit ubuntu version
+        os-name: [
+          # ubuntu-latest,  # ubuntu-22.04
+          ubuntu-22.04,
+        ]
+        python-version: [
+          "3.12"
+        ]
+        pillow-version: [
+          "10.2.0"
+        ]
 
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4.1.7
       # get parent dir
       - name: 📁Get Parent Directory
         id: parentDir
         uses: ./.github/actions/get-parent-dir
       # download appversion artifact
       - name: 🔽Download AppVersion Artifact
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4.1.8
         with:
-          name: appversion-${{ matrix.os-name }}
+          name: appversion-build-${{ matrix.os-name }}-py${{ matrix.python-version }}-pil${{ matrix.pillow-version }}
           path: ${{ steps.parentDir.outputs.parentDir }}/build
       # Prepare Pages
       - name: 🌎->📦Prepare GitHub Pages
@@ -447,7 +444,7 @@ jobs:
           python ./resources/ci/common/prepare_pages.py
       # upload pages artifact for later step
       - name: 🔼Upload Pages Artifact
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: pages-${{ matrix.os-name }}
           path: ${{ steps.parentDir.outputs.parentDir }}/pages
@@ -460,15 +457,19 @@ jobs:
 
     strategy:
       matrix:
-        os-name: [ubuntu-latest]
+        # should run on latest explicit ubuntu version
+        os-name: [
+          # ubuntu-latest,  # ubuntu-22.04
+          ubuntu-22.04,
+        ]
 
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4.1.7
       # download pages artifact
       - name: 🔽Download Pages Artifact
-        uses: actions/download-artifact@v3.0.1
+        uses: actions/download-artifact@v4.1.8
         with:
           name: pages-${{ matrix.os-name }}
           path: ./
@@ -485,11 +486,12 @@ jobs:
         run: |
           git diff --name-status --cached
       # Set Commit
-      - name: ➕Set Commit
+      - name: ➕Set Commit (MASTER)
         shell: bash
         run: |
           git commit -q -F commit.txt
           git log
+        if: contains(github.ref, 'master')
       # Push to GH-Pages
       - name: 🚀Push to GH-Pages (MASTER)
         shell: bash

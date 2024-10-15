@@ -7,7 +7,9 @@
     "input": {
       "png": {
         "dims": [ 128, 448 ]
-      }
-    }
+      },
+      "zspr": {}
+    },
+    "output": [ ".zspr", ".rdc" ]
   }
 }

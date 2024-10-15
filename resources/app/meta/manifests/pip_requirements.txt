@@ -1,4 +1,6 @@
 wheel
 numpy
-pillow==6.2.2
+pillow
+pyjson5
+pyyaml
 setuptools

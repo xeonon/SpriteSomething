@@ -1,0 +1,70 @@
+{
+  "section": {
+    "facing": "Facing",
+    "palette": "Palette",
+    "weapon": "Weapon",
+    "shield": "Shield",
+    "magnet": "Magnet",
+    "sling": "Slingshot",
+    "boomerang": "Boomerang",
+    "accessories": "Accessories",
+    "halo": "Time Travel"
+  },
+  "Facing": {
+    "up": "Up",
+    "left": "Left",
+    "down": "Down",
+    "right": "Right"
+  },
+  "Palette": {
+    "green": "Green",
+    "blue": "Blue",
+    "red": "Red",
+    "gold": "Gold",
+    "invertgreen": "Inverted Green",
+    "invertblue": "Inverted Blue",
+    "invertred": "Inverted Red",
+    "invertgold": "Inverted Gold"
+  },
+  "Weapon": {
+    "none": "None",
+    "biggoron": "Biggoron Sword",
+    "cane": "Cane of Somaria",
+    "charge": "Charged Sword",
+    "master": "Master Sword",
+    "noble": "Noble Sword",
+    "ore": "Fool's Ore",
+    "rod": "Rod of Seasons",
+    "seed": "Seed Shooter",
+    "wooden": "Wooden Sword"
+  },
+  "Shield": {
+    "none": "None",
+    "wooden": "Wooden Shield",
+    "iron": "Iron Shield",
+    "mirror": "Mirror Shield"
+  },
+  "Magnet": {
+    "none": "None",
+    "blue": "Blue",
+    "red": "Red"
+  },
+  "Slingshot": {
+    "none": "None",
+    "blue": "Slingshot",
+    "red": "Hyper Slingshot"
+  },
+  "Boomerang": {
+    "none": "None",
+    "normal": "Boomerang",
+    "magical": "Magical Boomerang"
+  },
+  "Accessories": {
+    "none": "None",
+    "yes": "Yes"
+  },
+  "Time Travel": {
+    "blue": "Past",
+    "pink": "Future"
+  }
+}
