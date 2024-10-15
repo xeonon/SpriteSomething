@@ -106,8 +106,8 @@ def equipment_test(save=False):
     equipment_image = Image.open(
         common.get_resource(
             [
-                "pc",
-                "doi",
+                "snes",
+                "zelda3",
                 "link",
                 "sheets"
             ],
@@ -250,8 +250,8 @@ def equipment_test(save=False):
                     ".",
                     "resources",
                     "user",
-                    "pc",
-                    "doi",
+                    "snes",
+                    "zelda3",
                     "link",
                     "sheets",
                     icon + ".png"
@@ -262,14 +262,14 @@ def equipment_test(save=False):
     for [icon, iconData] in icon_specs.items():
         filename = iconData[0]
         icon_coords = iconData[1]
-        cropped_image = Image.open(
-            common.get_resource(
-            [
-                "pc",
-                "doi",
-                "link",
-                "sheets"
-            ],
+        cropped_image = Image.open(os.path.join(
+            ".",
+            "resources",
+            "app",
+            "snes",
+            "zelda3",
+            "link",
+            "sheets",
             filename
         )).crop(icon_coords)
         equipment[icon] = cropped_image
@@ -279,8 +279,8 @@ def equipment_test(save=False):
                     ".",
                     "resources",
                     "user",
-                    "pc",
-                    "doi",
+                    "snes",
+                    "zelda3",
                     "link",
                     "sheets",
                     icon + ".png"

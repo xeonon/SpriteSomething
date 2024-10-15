@@ -1,0 +1,183 @@
+{
+  "$schema": "../../../../../schema/spiffy-buttons.schema.json",
+  "button-groups": [
+    {
+      "group-fish-key": "mail",
+      "buttons": [
+        {
+          "meta": "blank"
+        },
+        {
+          "fish-subkey": "green",
+          "img": "mail-green.png",
+          "default": true
+        },
+        {
+          "fish-subkey": "blue",
+          "img": "mail-blue.png"
+        },
+        {
+          "fish-subkey": "red",
+          "img": "mail-red.png"
+        },
+        {
+          "fish-subkey": "yellow",
+          "img": "mail-yellow.png"
+        },
+        {
+          "fish-subkey": "cursed",
+          "img": "mail-cursed.png"
+        }
+      ]
+    },
+    {
+      "group-fish-key": "sword",
+      "buttons": [
+        {
+          "fish-subkey": "none",
+          "img": "no-thing.png",
+          "default": true
+        },
+        {
+          "fish-subkey": "fighter",
+          "img": "sword-fighters.png"
+        },
+        {
+          "fish-subkey": "master",
+          "img": "sword-master.png"
+        },
+        {
+          "fish-subkey": "tempered",
+          "img": "sword-tempered.png"
+        },
+        {
+          "fish-subkey": "gold",
+          "img": "sword-butter.png"
+        },
+        {
+          "meta": "newline"
+        },
+        {
+          "meta": "blank"
+        },
+        {
+          "fish-subkey": "basic",
+          "img": "sword-fighters.png"
+        },
+        {
+          "fish-subkey": "iron",
+          "img": "sword-iron.png"
+        },
+        {
+          "fish-subkey": "long",
+          "img": "sword-long.png"
+        },
+        {
+          "fish-subkey": "dragon",
+          "img": "sword-dragon.png"
+        },
+        {
+          "fish-subkey": "blood",
+          "img": "sword-blood.png"
+        },
+        {
+          "fish-subkey": "master2",
+          "img": "sword-master2.png"
+        }
+      ]
+    },
+    {
+      "group-fish-key": "shield",
+      "buttons": [
+        {
+          "fish-subkey": "none",
+          "img": "no-thing.png",
+          "default": true
+        },
+        {
+          "fish-subkey": "fighter",
+          "img": "shield-fighters.png"
+        },
+        {
+          "fish-subkey": "fire",
+          "img": "shield-fire.png"
+        },
+        {
+          "fish-subkey": "mirror",
+          "img": "shield-mirror.png"
+        },
+        {
+          "meta": "newline"
+        },
+        {
+          "meta": "blank"
+        },
+        {
+          "fish-subkey": "wooden",
+          "img": "shield-fire.png"
+        },
+        {
+          "fish-subkey": "triforce",
+          "img": "shield-triforce.png"
+        },
+        {
+          "fish-subkey": "mirror2",
+          "img": "shield-mirror2.png"
+        },
+        {
+          "fish-subkey": "golden",
+          "img": "shield-mirror.png"
+        }
+      ]
+    },
+    {
+      "group-fish-key": "gloves",
+      "buttons": [
+        {
+          "fish-subkey": "none",
+          "img": "no-thing.png",
+          "default": true
+        },
+        {
+          "fish-subkey": "power",
+          "img": "glove1.png"
+        },
+        {
+          "fish-subkey": "titan",
+          "img": "glove2.png"
+        }
+      ]
+    },
+    {
+      "group-fish-key": "accessories",
+      "buttons": [
+        {
+          "fish-subkey": "none",
+          "img": "no-thing.png"
+        },
+        {
+          "fish-subkey": "yes",
+          "img": "yes-thing.png",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "tests": {
+    "Stand": {
+      "frame": 0,
+      "selections": [
+        [],
+        ["power_gloves"],
+        ["titan_gloves"],
+        ["blue_mail","titan_gloves"],
+        ["blue_mail","power_gloves"],
+        ["blue_mail"],
+        ["red_mail"],
+        ["red_mail","power_gloves"],
+        ["red_mail","titan_gloves"],
+        ["titan_gloves"]
+      ]
+    }
+  }
+}
